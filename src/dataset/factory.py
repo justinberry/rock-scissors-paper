@@ -12,14 +12,15 @@ import random
 
 data_root = pathlib.Path('./data')
 
-def create_labelled_images():
-  # Read in list of image paths
+def get_image_paths():
   image_path_list = list(data_root.glob('*/*.png'))
   image_paths = [str(path) for path in image_path_list]
   random.shuffle(image_paths)
-  
+  return image_paths
+
+def create_labelled_images(image_paths):
   # Infer labels from directory names
-  labels = sorted(
+  label_names = sorted(
     item.name
     for item in data_root.glob('*/') if item.is_dir()
   )
@@ -28,14 +29,17 @@ def create_labelled_images():
   # category.
   label_with_index = dict(
     (name, index)
-    for index, name in enumerate(labels))
+    for index, name in enumerate(label_names)
+  )
+
   labelled_images = [
     label_with_index[pathlib.Path(path).parent.name]
     for path in image_paths
   ]
-  return labelled_images
+  return labelled_images, label_with_index, label_names
 
 def create():
-  labelled_images = create_labelled_images()
-  print('First 10 labelled images: ', labelled_images[:10])
+  image_paths = get_image_paths()
+  labelled_images, label_with_index, label_names = create_labelled_images(image_paths)
+  return (image_paths, labelled_images, label_with_index, label_names)
 #%%
