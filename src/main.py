@@ -82,7 +82,7 @@ model = tf.keras.Sequential([
   tf.keras.layers.Dense(NUM_LABELS, activation='softmax')
 ])
 
-model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.05),
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.1),
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy', 'categorical_accuracy'])
 
