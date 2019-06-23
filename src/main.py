@@ -44,7 +44,7 @@ image_label_dataset = tf.data.Dataset.zip((image_dataset, label_dataset))
 #    To repeat forever.
 #    Batches to be available as soon as possible.
 
-BATCH_SIZE = 32
+BATCH_SIZE = 64
 
 # The order is important.
 # 
@@ -82,18 +82,16 @@ model = tf.keras.Sequential([
   tf.keras.layers.Dense(NUM_LABELS, activation='softmax')
 ])
 
-#model = tf.keras.applications.ResNet50(weights='imagenet')
-
-model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.0000001),
-              loss='categorical_crossentropy',
-              metrics=['accuracy'])
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.05),
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy', 'categorical_accuracy'])
 
 # The model is now created and ready to be fit against training set
 model.summary()
 
 steps_per_epoch=tf.math.ceil(IMAGE_COUNT / BATCH_SIZE).numpy()
 
-model.fit(the_dataset, epochs=5, steps_per_epoch=steps_per_epoch * 2)
+model.fit(the_dataset, epochs=20, steps_per_epoch=steps_per_epoch * 2)
 #model.fit(the_dataset, epochs=1, steps_per_epoch=3)
 
 prediction = model.predict(the_dataset)
@@ -106,7 +104,7 @@ matplotlib.use('WebAgg')
 
 matplot.figure(figsize=(10,9))
 matplot.subplots_adjust(hspace=0.5)
-plot_x_width = 6
+plot_x_width = 8
 plot_y_width = 5
 for n in range(plot_x_width * plot_y_width):
   matplot.subplot(plot_x_width, plot_y_width, n+1)
